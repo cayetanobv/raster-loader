@@ -36,6 +36,7 @@ DEFAULT_TYPES_NODATA_VALUES = {
     "float64": np.nan,
 }
 
+MAX_MOST_COMMON = 10
 SAMPLING_MAX_ITERATIONS = 100
 SAMPLING_MAX_SAMPLES = 10000
 OVERVIEWS = range(3, 20)
@@ -406,7 +407,8 @@ def sample_not_masked_values(
 def most_common_approx(samples: List[Union[int, float]]) -> Dict[int, int]:
     """Compute the most common values in a list of int samples."""
     counts = np.bincount(samples)
-    idx = np.argpartition(counts, -10)[-10:]
+    nth = min(MAX_MOST_COMMON, len(counts))
+    idx = np.argpartition(counts, -nth)[-nth:]
     return dict([(int(i), int(counts[i])) for i in idx if counts[i] > 0])
 
 
