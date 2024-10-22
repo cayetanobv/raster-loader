@@ -388,7 +388,10 @@ def sample_not_masked_values(
 
         samples = raster_dataset.sample(coords, indexes=bands, masked=True)
         for sample in samples:
-            if not any(sample.mask):
+            raster_is_masked = (
+                sample.mask if isinstance(sample.mask, np.bool_) else sample.mask.any()
+            )
+            if not raster_is_masked:
                 for band in bands:
                     not_masked_samples[band].append(sample[band - 1])
 
